@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% block content %}
+<div class="container">
+    <h1 class="text-center fw-bold my-5">프로필 수정</h1>
+    <form action="{% url 'accounts:pupdate' %}" method='POST' enctype='multipart/form-data'>
+        {% csrf_token %}
+        {% bootstrap_form form %}
+    </form>
+</div>
+{% endblock  %}
