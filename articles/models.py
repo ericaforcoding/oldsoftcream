@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.conf import settings
 # Create your models here.
 
 class Articles(models.Model):
@@ -8,3 +8,8 @@ class Articles(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class Comment(models.Model):
+    content = models.TextField()
+    create_at = models.DateTimeField(auto_now_add=True)
+    articles = models.ForeignKey(Articles, on_delete=models.CASCADE)
+    # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
