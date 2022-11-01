@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 def index(request):
-    context = {
+    return render(request, 'articles/index.html')
 
-    }
-    return render(request, 'articles/index.html', context)
+def create(request):
+    pass
