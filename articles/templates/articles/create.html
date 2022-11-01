@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="{% url 'articles:create' %}" method="POST">
+    {% csrf_token %}
+    {{ article_form.as_p }}
+    <input type="submit" value="작성">
+  </form>
+  <a href="{% url 'articles:index' %}">인덱스 페이지</a>
+{% endblock %}
