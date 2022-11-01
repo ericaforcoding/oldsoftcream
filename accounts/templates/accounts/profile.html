@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <h1 class="text-center fw-bold my-5">프로필</h1>
+    <div class="row">
+        <div class="col-6 d-flex flex-column">
+            {% if request.user.profile.image %}
+            <img src="" alt="">
+            {% else %}
+            <img src="{% static 'profile/guest.png' %}" class='img-fluid' alt="">
+            {% endif %}
+            <a href="" class='btn btn-primary'>프로필 업데이트</a>
+        </div>
+        <div class="col-6">
+            <h3>유저이름</h3>
+            <h3>유저 이메일</h3>
+            <h3>유저 이름</h3>
+            <h3>유저 상태메세지</h3>
+        </div>
+    </div>
+</div>
+{% endblock  %}
