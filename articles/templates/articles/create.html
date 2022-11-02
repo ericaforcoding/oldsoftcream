@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
 {% block content %}
-<form action="{% url 'articles:create' %}" method="POST">
+<form action="{% url 'articles:create' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ article_form.as_p }}
     <input type="submit" value="작성">
