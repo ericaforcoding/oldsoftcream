@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <div class='d-flex justify-content-center'>
     {% if category == '나이키' %}
-    <img class='my-3' src="" alt="">
+    <img src="{% static 'images/6c757d.jpg' %}" class='rounded-pill' style="width: 150px; height: 150px;" alt="...">
     {% elif category == '아디다스' %}
-    <img class='my-3' src="" alt="">
+    <img src="{% static 'images/6c757d.jpg' %}" class='rounded-pill' style="width: 150px; height: 150px;" alt="...">
     {% elif category == '뉴발란스' %}
-    <img class='my-3' src="" alt="">
+    <img src="{% static 'images/6c757d.jpg' %}" class='rounded-pill' style="width: 150px; height: 150px;" alt="...">
     {% elif category == '기타' %}
-    <img class='my-3' src="" alt="">
+    <img src="{% static 'images/6c757d.jpg' %}" class='rounded-pill' style="width: 150px; height: 150px;" alt="...">
     {% endif %}
 <div>
 <h1 class="text-center p-5">{{ category.name }}</h1>
-<p class="text-center">리뷰 {{ category_articles.count }}개</p>
+<p class="text-center">리뷰 <b>{{ category_articles.count }}</b></p>
 <div class='row'>
 {% for article in category_articles %}
-    <div class='col-3'>
-        <img class="rounded-4" src="{{ article.image.url }}" alt="{{ article.image }}" class="rounded-4">
+    <div class='col-6 col-sm-3'>
+        <img src="{{ article.image.url }}" alt="{{ article.image }}" class="rounded-4" style="width: 100%">
         <div class='justify-content-center'>
             <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
