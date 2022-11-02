@@ -40,7 +40,7 @@ def detail(request, pk):
 @require_http_methods(["GET", "POST"])
 def update(request, pk):
     article = get_object_or_404(Articles, pk=pk)
-    if request.method == "POST":
+    if request.method == 'POST':
         article_form = ArticleForm(request.POST, request.FILES, instance=article)
         if article_form.is_valid():
             article_form.save()
@@ -68,10 +68,9 @@ def category(request):
 
 def user_page(request, user_pk):
     user = get_user_model().objects.get(pk=user_pk)
-    articles = Articles.objects.filter(user=user)
-    context = {"user": user, "articles": articles}
-    return render(request, "articles/user_page.html", context)
-
+    # articles = Articles.objects.filter(user=user)
+    context = {'user': user}
+    return render(request, 'articles/user_page.html', context)
 
 from django.http import JsonResponse
 

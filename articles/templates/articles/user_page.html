@@ -1,14 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class='d-flex justify-content-center mt-5'>
-    <img class='my-3' src="{{ user.image.url }}" alt="{{ user.image }}">
-<div>
-<h1 class="text-center p-5">{{ user.name }}</h1>
-<p class="text-center">리뷰 {{ articles.count }} / 팔로워 {{ user.followers.count }} / 팔로잉 {{ user.followings.count }}</p>
-<div class='row'>
-{% for article in articles %}
-    <div class='col-3'>
-        <img class="rounded-4" src="{{ article.image.url }}" alt="{{ article.image }}" class="rounded-4">
+<div class='d-flex justify-content-center mt-3'>
+    <img class='rounded-pill' style="width: 150px; height: 150px;" src="{{ user.profile.image.url }}" alt="{{ user.profile.image }}">
+</div>
+<div class='text-center'>
+    <h3 class="text-center p-2">{{ user }}</h3>
+    <p class="text-center">{{ user.profile.status }}</p>
+    {% if request.user.is_authenticated %}
+    {% if request.user != user %}
+        {% if request.user in user.followers.all %}
+        <span id='follow' data-user-id='{{ user.pk }}' class='btn btn-outline-primary mb-2'>팔로우 취소</span>
+        {% else %}
+        <span id='follow' data-user-id='{{ user.pk }}' class='btn btn-primary mb-2'>팔로우</span>
+        {% endif %}
+    {% endif %}
+    {% endif %}
+    <p class="text-center pb-2"><span class="mx-2">게시물 <b>1000</b></span><span class="mx-2">팔로워 <b id='followers'>{{ user.followers.count }}</b></span><span class="mx-2">팔로잉 <b id='followings'>{{ user.followings.count }}</b></span></p>
+</div>
+{% comment %} <div class='row'> {% endcomment %}
+{% comment %} {% for article in articles %}
+    <div class='col-6 col-sm-3'>
+        <img src="{{ article.image.url }}" alt="{{ article.image }}" class="rounded-4">
         <div class='justify-content-center'>
             <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
@@ -18,6 +30,34 @@
             </svg>{{ article.comment.count }}</span>
         </div>
     </div>
-{% endfor %}
-</div>
+{% endfor %} {% endcomment %}
+{% comment %} </div> {% endcomment %}
 {% endblock %}
+{% block script1 %}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        const followBtn = document.querySelector('#follow')
+        followBtn.addEventListener('click', function(event) {
+            axios({
+                method: 'get',
+                url: `/accounts/follow/${event.target.dataset.userId}/`
+            })
+            .then(response => {
+                if( response.data.is_followed == true) {
+                    event.target.classList.remove('btn-primary')
+                    event.target.classList.add('btn-outline-primary')
+                    followBtn.innerText= '팔로우 취소'
+                } else {
+                    event.target.classList.remove('btn-outline-primary')
+                    event.target.classList.add('btn-primary')
+                    followBtn.innerText='팔로우'
+                }
+                const followers = document.querySelector('#followers')
+                const followings = document.querySelector('#followings')
+                followers.innerText = response.data.followersC
+                followings.innerText = response.data.followingsC
+            })
+        })
+    </script>
+{% endblock script1 %}
