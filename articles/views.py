@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import Articles
 from .forms import ArticleForm, CommentForm
+from django.views.decorators.http import require_http_methods
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 def index(request):
@@ -8,14 +10,14 @@ def index(request):
 
 def create(request):
     if request.method == 'POST':
-        article_form = ArticleForm(request.POST)
+        article_form = ArticleForm(request.POST, request.FILES)
         if article_form.is_valid():
-            article_form.save() 
+            article_form.save()
             return redirect('articles:index')
     else:
         article_form = ArticleForm()
     context = {
-    'article_form': article_form
+        'article_form': article_form,
     }
     return render(request, 'articles/create.html', context)
 
@@ -28,26 +30,26 @@ def detail(request, pk):
     }
     return render(request, 'articles/detail.html', context)
 
+@require_http_methods(['GET', 'POST'])
 def update(request, pk):
-    article = Articles.objects.get(pk=pk)
+    article = get_object_or_404(Articles, pk=pk)
     if request.method == 'POST':
-        article_form  = ArticleForm(request.POST, instance=article)
+        article_form  = ArticleForm(request.POST, request.FILES, instance=article)
         if article_form.is_valid():
             article_form.save()
-            return redirect('articles:index')
+            return redirect('articles:detail', article.pk)
     else:
         article_form = ArticleForm(instance=article)
     context = {
-        'article_form': article_form
+        'article_form': article_form,
     }
     return render(request, 'articles/update.html', context)
+
 
 def delete(request, pk):
     article = Articles.objects.get(pk=pk)
     article.delete()
     return redirect('articles:index')
-
-    pass
 
 def category(request):
     category = request.GET.get('category')
