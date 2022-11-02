@@ -1,21 +1,32 @@
 from ast import Pass
+
+from django.http import JsonResponse
+from .models import Profile, User
 from django.shortcuts import render, redirect
 
 from accounts.forms import SignupForm, UpdateForm, ProfileForm
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import get_user_model
 
 # Create your views here.
 def index(request):
-    return render(request, "accounts/index.html")
+    users = User.objects.all()
+    context = {
+        "users": users,
+    }
+    return render(request, "accounts/index.html", context)
 
 
 def signup(request):
     if request.method == "POST":
         form = SignupForm(request.POST)
+        profile = Profile()
         if form.is_valid():
-            form.save()
+            user = form.save()
+            profile.user = user
+            profile.save()
             return redirect("articles:index")
     else:
         form = SignupForm()
@@ -77,12 +88,18 @@ def delete(request):
     return redirect("articles:index")
 
 
-def mypage(request):
-    return render(request, "accounts/mypage.html")
+def mypage(request, pk):
+    user = get_user_model().objects.get(pk=pk)
+    context = {"user": user}
+    return render(request, "accounts/mypage.html", context)
 
 
-def profile(request):
-    return render(request, "accounts/profile.html")
+def profile(request, pk):
+    user = get_user_model().objects.get(pk=pk)
+    context = {
+        "user": user,
+    }
+    return render(request, "accounts/profile.html", context)
 
 
 def pupdate(request):
@@ -96,4 +113,25 @@ def pupdate(request):
     context = {
         "form": form,
     }
-    return render(request, "accounts:pupdate.html", context)
+    return render(request, "accounts/pupdate.html", context)
+
+
+def follow(request, pk):
+    if request.user.is_authenticated:
+        me = request.user
+        user = get_user_model().objects.get(pk=pk)
+        if me != user:
+            if me in user.followers.all():
+                user.followers.remove(me)
+                is_followed = False
+            else:
+                user.followers.add(me)
+                is_followed = True
+            context = {
+                "is_followed": is_followed,
+                "followersC": user.followers.count(),
+                "followingsC": user.followings.count(),
+            }
+            return JsonResponse(context)
+        return redirect("accounts:mypage", pk)
+    return redirect("accounts:login")
