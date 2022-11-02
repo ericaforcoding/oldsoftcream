@@ -19,12 +19,14 @@
             <div>
                 <div>
                     <a class='btn btn-light mb-2' href='{% url 'accounts:profile' user.pk %}'>{{ user }}</a>
+                    {% if request.user.is_authenticated %}
                     {% if request.user != user %}
                         {% if request.user in user.followers.all %}
-                        <span id='follow' data-user-id='{{ user.pk }}' class='btn btn-outline-primary mb-2'>팔로우 취소</span>
+                        <span id='follow' data-user-id='{{ user.pk }}' class='btn btn-light mb-2'>팔로잉</span>
                         {% else %}
-                        <span id='follow' data-user-id='{{ user.pk }}' class='btn btn-primary mb-2'>팔로우</span>
+                        <span id='follow' data-user-id='{{ user.pk }}' class='btn btn-dark mb-2'>팔로우</span>
                         {% endif %}
+                    {% endif %}
                     {% endif %}
                 </div>
                     {% if request.user == user %}
@@ -89,12 +91,12 @@
             })
             .then(response => {
                 if( response.data.is_followed == true) {
-                    event.target.classList.remove('btn-primary')
-                    event.target.classList.add('btn-outline-primary')
-                    followBtn.innerText= '팔로우취소'
+                    event.target.classList.remove('btn-dark')
+                    event.target.classList.add('btn-light')
+                    followBtn.innerText= '팔로잉'
                 } else {
-                    event.target.classList.remove('btn-outline-primary')
-                    event.target.classList.add('btn-primary')
+                    event.target.classList.remove('btn-light')
+                    event.target.classList.add('btn-dark')
                     followBtn.innerText='팔로우'
                 }
                 const followers = document.querySelector('#followers')

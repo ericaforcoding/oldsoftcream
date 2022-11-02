@@ -9,6 +9,7 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
@@ -39,7 +40,7 @@ def login(request):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
-            return redirect("articles:index")
+            return redirect(request.GET.get("next") or "articles:index")
     else:
         form = AuthenticationForm()
     context = {
@@ -53,6 +54,7 @@ def logout(request):
     return redirect("articles:index")
 
 
+@login_required
 def update(request):
     if request.method == "POST":
         form = UpdateForm(request.POST, instance=request.user)
@@ -67,6 +69,7 @@ def update(request):
     return render(request, "accounts/update.html", context)
 
 
+@login_required
 def password(request):
     if request.method == "POST":
         form = PasswordChangeForm(request.user, request.POST)
@@ -82,6 +85,7 @@ def password(request):
     return render(request, "accounts/password.html", context)
 
 
+@login_required
 def delete(request):
     request.user.delete()
     auth_logout(request)
@@ -102,12 +106,13 @@ def profile(request, pk):
     return render(request, "accounts/profile.html", context)
 
 
+@login_required
 def pupdate(request):
     if request.method == "POST":
         form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
             form.save()
-            return redirect("accounts:profile")
+            return redirect("accounts:profile", request.user.pk)
     else:
         form = ProfileForm(instance=request.user.profile)
     context = {
@@ -116,6 +121,7 @@ def pupdate(request):
     return render(request, "accounts/pupdate.html", context)
 
 
+@login_required
 def follow(request, pk):
     if request.user.is_authenticated:
         me = request.user

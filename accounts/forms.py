@@ -44,6 +44,6 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = [
             "image",
-            "thumbnail",
             "status",
         ]
+        labels = {"image": "프로필 이미지", "status": "상태 메세지"}
