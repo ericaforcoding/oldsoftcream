@@ -19,12 +19,14 @@
             <div>
                 <div>
                     <a class='btn btn-light mb-2' href='{% url 'accounts:profile' user.pk %}'>{{ user }}</a>
+                    {% if request.user.is_authenticated %}
                     {% if request.user != user %}
                         {% if request.user in user.followers.all %}
                         <span id='follow' data-user-id='{{ user.pk }}' class='btn btn-outline-primary mb-2'>팔로우 취소</span>
                         {% else %}
                         <span id='follow' data-user-id='{{ user.pk }}' class='btn btn-primary mb-2'>팔로우</span>
                         {% endif %}
+                    {% endif %}
                     {% endif %}
                 </div>
                     {% if request.user == user %}
