@@ -21,6 +21,9 @@
                 <ul class="d-flex navbar-nav mb-2 mb-lg-0 justify-content-end">
                   {% if request.user.is_authenticated %}
                   <li class="nav-item">
+                    <a class="nav-link mt-1" href="{% url 'articles:create' %}">CREATE</a>
+                  </li>
+                  <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{% url 'accounts:profile' request.user.pk %}">
                       {% if request.user.profile.image %}
                       <img src="{{ request.user.profile.image.url }}" style='width:2rem;height:2.2rem' alt="" class='rounded-circle'>

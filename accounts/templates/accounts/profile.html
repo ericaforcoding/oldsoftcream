@@ -3,13 +3,13 @@
 {% load static %}
 {% block content %}
 <div class="container">
-    <h1 class="text-center fw-bold my-5">프로필</h1>
+    <h1 class="fw-bold my-5 border border-dark border-top-0 border-start-0 border-end-0 border-5 pb-3">프로필 정보</h1>
     <div class="row">
         <div class="col-12 col-md-6 d-flex flex-column align-content-center mb-5" >
-            <div class='row justify-content-center'>
+            <div class='row '>
                 
                 {% if user.profile.image %}
-                <div class='col-5 text-center'>
+                <div class='col-5 '>
                     <img src="{{ user.profile.image.url }}" alt="{{ user.profile.image }}">
                     {% if request.user == user %}
                     <div class='text-center d-grid'>
@@ -20,7 +20,7 @@
 
                 {% elif user.profile.thumbnail %}
                     
-                <div class='col-5 text-center'>
+                <div class='col-5 '>
                     <img src="{{ user.profile.thumbnail.url }}" alt="{{ user.profile.thumbnail }}" >
                     {% if request.user == user %}
                     <div class='text-center d-grid'>
@@ -30,7 +30,7 @@
                 </div>
 
                 {% else %}
-                <div class='row justify-content-center'>
+                <div class='row '>
                     <img src="{% static 'profile/guest.png' %}" alt="" class='text-cneter' style='width:20rem'>
                     {% if request.user == user %}
                     <div class='text-center d-grid' style='width:20rem'>
