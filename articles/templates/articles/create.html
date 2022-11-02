@@ -2,10 +2,16 @@
 {% load static %}
 {% load django_bootstrap5 %}
 {% block content %}
-<form action="{% url 'articles:create' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ article_form.as_p }}
-    <input type="submit" value="작성">
+<div class="text-center my-5"><h1>Shoes Recommendation</h1></div>
+
+<div class="container">
+  <form action="{% url 'articles:create' %}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% bootstrap_form article_form %}
+      <div class="d-flex justify-content-between">
+        <div><input type="submit" value="create"></div>
+        <div><a href="{% url 'articles:index' %}" class="text-decoration-none" style="color:rgb(207, 178, 132)">Previous</a></div>
+      </div>
   </form>
-  <a href="{% url 'articles:index' %}">인덱스 페이지</a>
+</div>
 {% endblock %}
