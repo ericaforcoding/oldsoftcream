@@ -47,6 +47,18 @@
         <span class="visually-hidden">Next</span>
         </button>
     </div>
+    <div class='d-flex justify-content-center my-3 text-danger'>
+        {% if request.user.is_authenticated %}
+        {% if request.user in article.like_users.all %}
+            <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart-fill"></i>
+        {% else %}
+            <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart"></i>
+        {% endif %}
+        {% endif %}
+        <span id="like-count" class='px-2'>
+        {{ article.like_users.count }}
+        </span>
+    </div>
 
     <form action="{% url 'articles:detail' article.pk %}" method="POST">
         {% csrf_token %}
@@ -54,4 +66,33 @@
         <input type="submit" value="작성">
     </form>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>   
+<script>
+    // 좋아요 버튼
+    const likeBtn = document.querySelector('#like-btn')
+    // 좋아요 버튼을 클릭하면 함수 실행
+    likeBtn.addEventListener('click', function (event) {
+        // 비동기 요청
+        console.log(event.target.dataset)
+        axios({
+            method: 'get',
+            url: `/articles/${event.target.dataset.articleId}/like/`,
+        })
+        .then(response => {
+            console.log(response)
+            console.log(response.data)
+            // event.target.classList.toggle('bi-heart')
+            // event.target.classList.toggle('bi-heart-fill')
+            if (response.data.isLiked === true) {
+                event.target.classList.add('bi-heart-fill')
+                event.target.classList.remove('bi-heart')
+            } else {
+                event.target.classList.add('bi-heart')
+                event.target.classList.remove('bi-heart-fill')
+            }
+            const likeCount = document.querySelector('#like-count')
+            likeCount.innerText = response.data.likeCount
+        })
+    })
+</script>
 {% endblock %}
