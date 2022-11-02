@@ -3,6 +3,8 @@ from .models import Articles
 from .forms import ArticleForm, CommentForm
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 
 # Create your views here.
 def index(request):
@@ -62,5 +64,17 @@ def user_page(request, user_pk):
     articles = Articles.objects.filter(user=user)
     context = {'user': user, 'articles': articles}
     return render(request, 'articles/user_page.html', context)
+
+from django.http import JsonResponse
+@login_required
+def like(request, pk):
+    article = Articles.objects.get(pk=pk)
+    if request.user in article.like_users.all(): 
+        article.like_users.remove(request.user)
+        is_liked = False
+    else:
+        article.like_users.add(request.user)
+        is_liked = True
+    return JsonResponse({'isLiked': is_liked, 'likeCount': article.like_users.count()})
 
 

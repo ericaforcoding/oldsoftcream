@@ -8,7 +8,7 @@ class Articles(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='images/', blank=True,)
-    
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_articles')
 
 class Comment(models.Model):
     content = models.TextField()
