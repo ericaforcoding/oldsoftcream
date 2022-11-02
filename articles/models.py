@@ -4,6 +4,7 @@ from django.conf import settings
 # from imagekit.processors import Thumbnail
 # Create your models here.
 
+
 class Articles(models.Model):
     title = models.CharField(max_length=80)
     content = models.TextField()
@@ -17,12 +18,14 @@ class Articles(models.Model):
       	# options={'quality' : 90},
         )
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_articles')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 class Comment(models.Model):
     content = models.TextField()
     create_at = models.DateTimeField(auto_now_add=True)
     articles = models.ForeignKey(Articles, on_delete=models.CASCADE)
-    # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
 
 # class Image(models.Model):
 #     article = models.ForeignKey(Articles, on_delete=models.CASCADE)

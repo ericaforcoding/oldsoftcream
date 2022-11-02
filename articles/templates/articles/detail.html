@@ -4,21 +4,31 @@
 {% block content %}
 
 <main class="container w-50">
-    <div class="d-flex justify-content-between my-5">
-        <div class="d-flex">
-            <div>
-                <img src="http://via.placeholder.com/100x100" alt="" class="rounded-circle">
+    <div class="d-flex justify-content-between my-1 mt-5">
+        <div class="d-flex my-3" onclick='location.href="{% url 'accounts:mypage' article.user.pk %}"' style='cursor: pointer;'>
+            <div class='me-2'>
+                {% if article.user.profile.image %}
+                <img src="{{ article.user.profile.image.url }}" alt="{{ article.user.profile.image }}" style='width:3rem;height:3rem' class='rounded-circle'>
+                {% else %}
+                <img src="{% static 'profile/guest.png' %}" alt="guest" style='width:3rem;height:3rem' class='rounded-circle'>
+                {% endif %}
             </div>
-            <div class="justify-content-between">
-                <div class="mx-3 my-3">
-                    <p href="#">사용자</p>
-                    <p href="#">가입일</p>
-                </div>
+            <div class='d-flex flex-column'>
+                <p class='p-0 mb-0 text-start fw-bold'>{{ article.user }}</p>
+                <p class='p-0 mb-0 fw-light'>{{ article.created_at }}</p>
             </div>
         </div>
-            <div class="mx-1">
-                <button type="button" class="btn btn-dark">팔로우</button>
-            </div>
+        <div class="d-flex align-content-center">
+            {% if request.user.is_authenticated %}
+                {% if request.user in article.user.followers.all %}
+                <span id='follow' data-user-id='{{ article.user.pk }}' class='btn btn-light my-4 px-4'>팔로잉</span>
+                {% else %}
+                <span id='follow' data-user-id='{{ article.user.pk }}' class='btn btn-dark my-4 px-4'>팔로우</span>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class='btn btn-dark my-4 px-4'>팔로우</a>
+            {% endif %}
+        </div>
     </div>
 
     <div id="carouselExampleIndicators" class="carousel slide w-100" data-bs-ride="carousel">
@@ -71,7 +81,7 @@
 
     <!-- <form action="{% url 'articles:detail' article.pk %}" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        {% bootstrap_form form %}
         <input type="submit" value="작성">
         <a href="{% url 'articles:delete' article.pk %}">글 삭제</a>
     </form> -->
@@ -101,5 +111,28 @@
             likeCount.innerText = response.data.likeCount
         })
     })
-</script> -->
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const followBtn = document.querySelector('#follow')
+    followBtn.addEventListener('click', function(event) {
+        axios({
+            method: 'get',
+            url: `/accounts/follow/${event.target.dataset.userId}/`
+        })
+        .then(response => {
+            if( response.data.is_followed == true) {
+                event.target.classList.remove('btn-dark')
+                event.target.classList.add('btn-light')
+                followBtn.innerText= '팔로잉'
+            } else {
+                event.target.classList.remove('btn-light')
+                event.target.classList.add('btn-dark')
+                followBtn.innerText='팔로우'
+            }
+        })
+    })
+</script>
+
 {% endblock %}
