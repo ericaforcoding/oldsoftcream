@@ -1,6 +1,43 @@
 {% extends 'base.html' %}
 {% load django_bootstrap5 %}
-
+{% load static %}
 {% block content %}
-<h1>Accounts Index 페이지</h1>
+<div class="container">
+    <h1 class='text-center my-5'>Accounts Index 페이지</h1>
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">UserID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+            <colgroup>
+                <col style='width:5%'>
+                <col style='width:20%'>
+                <col style='width:10%'>
+                <col style='width:15%'>
+                <col style='width:50%'>
+            </colgroup>
+        {% for user in users %}
+        <tr onclick='location.href="{% url 'accounts:mypage' user.pk %}"' style='cursor: pointer;'>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>
+                {% if user.profile.image %}
+                <img src="{{ user.profile.image.url }}" alt="{{ user.profile.image }}" style='width:2rem; height:2.2rem' class='rounded-circle'>{{ user.username }}
+                {% else %}
+                <img src="{% static 'profile/guest.png' %}" alt="guest-img" style='width:2rem' class='rounded-circle'>{{ user.username }}
+                {% endif %}
+            </td>
+            <td>{{ user.last_name }}{{ user.first_name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.profile.status }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+</div>
 {% endblock  %}

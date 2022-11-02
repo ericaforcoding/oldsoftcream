@@ -8,8 +8,10 @@ from imagekit.processors import Thumbnail
 
 
 class User(AbstractUser):
+    followings = models.ManyToManyField(
+        "self", symmetrical=False, related_name="followers"
+    )
     pass
-
 
 class Profile(models.Model):
     user = models.OneToOneField(
