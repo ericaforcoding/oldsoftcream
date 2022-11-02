@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
-
+# from imagekit.processors import ProcessedImageField
+# from imagekit.processors import Thumbnail
 # Create your models here.
 
 
@@ -10,14 +11,14 @@ class Articles(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(
-        upload_to="images/",
+        upload_to='images/',
         blank=True,
-    )
-    like_users = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="like_articles"
-    )
+      	# processors=[Thumbnail(630,630)],
+      	# format="JPEG",
+      	# options={'quality' : 90},
+        )
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_articles')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
 
 class Comment(models.Model):
     content = models.TextField()
