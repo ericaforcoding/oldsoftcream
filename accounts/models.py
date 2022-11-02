@@ -13,6 +13,7 @@ class User(AbstractUser):
     )
     pass
 
+
 class Profile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
@@ -27,4 +28,4 @@ class Profile(models.Model):
         processors=[Thumbnail(300, 400)],
         format="JPEG",
     )
-    status = models.CharField(max_length=100)
+    status = models.CharField(max_length=100, blank=True)
