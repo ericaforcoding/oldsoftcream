@@ -27,7 +27,7 @@
 
 <div class="row mt-5">
     <div class="col-3">
-        <div class="text-center">
+        <div class="text-center" style="cursor:pointer" onclick ="location.href='#/';">
             <picture class="img-fluid">
                 <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
                 <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
@@ -36,7 +36,7 @@
         </div>
     </div>
     <div class="col-3">
-        <div class="text-center">
+        <div class="text-center"style="cursor:pointer" onclick ="location.href='#/';">
             <picture class="img-fluid">
                 <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
                 <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
@@ -45,7 +45,7 @@
         </div>
     </div>
     <div class="col-3">
-        <div class="text-center">
+        <div class="text-center" style="cursor:pointer" onclick ="location.href='#/';">
             <picture class="img-fluid">
                 <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
                 <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
@@ -54,7 +54,7 @@
         </div>
     </div>
     <div class="col-3">
-        <div class="text-center">
+        <div class="text-center" style="cursor:pointer" onclick ="location.href='#/';">
             <picture class="img-fluid">
                 <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
                 <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
@@ -64,78 +64,97 @@
     </div>
 </div>
 
-<!-- <div class="row mt-5">
-    <div class="col-3">
-        <div class="card">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">카테고리</h5>
-                <a href="#"> </a>
-            </div>
-        </div>
-    </div>
-    <div class="col-3">
-        <div class="card">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">카테고리</h5>
-                <a href="#"> </a>
-            </div>
-        </div>
-    </div>
-    <div class="col-3">
-        <div class="card">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">카테고리</h5>
-            </div>
-        </div>
-    </div>
-    <div class="col-3">
-        <div class="card">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">카테고리</h5>
-                <a href="#"> </a>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-<h6 class="mt-5">Just Dropped
-<p class="text-muted"><small>발매상품</small></p>
+<h6 class="mt-5"> Style pick!
+<p class="text-muted"><small>설명글</small></p>
 
 <div class ="row">
-    <div class="card mb-3 col-lg-3 col-6">
-        <img src="..." class="card-img-top" alt="...">
+    <div class="card border-0 mb-3 col-lg-3 col-6" style="cursor:pointer" onclick ="location.href='#/';">
+        <img src="https://via.placeholder.com/100X100"/ class="card-img-top" alt="...">
         <div class="card-body">
-            <h5 class="card-title">브랜드명</h5>
-            <p class="card-text">제품명</p>
-            <p class="card-text"><small class="text-muted">가격</small></p>
+            <div class="d-flex align-items-center">
+                <img class='rounded-circle my-3 me-1' src="https://via.placeholder.com/30x30"/ alt="{{ user.image }}">
+                <h5 class="card-title">유저네임{{ user.name }}</h5>
+            </div>  
+            <p class="card-text text-truncate">글내용 {{ articles.detail }}</p>
+            <div class="d-flex">
+                <div class="d-flex">
+                    {% if request.user.is_authenticated %}
+                    {% if request.user in article.like_users.all %}
+                        <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart-fill"></i>
+                    {% else %}
+                        <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart"></i>
+                    {% endif %}
+                    {% endif %}
+                    {{ article.like_users.count }} 12
+                </div>
+                <div class="d-flex ms-2">
+                    <i id="chat-btn" data-article-id="{{ article.pk }}" class="bi bi-chat"></i>
+                    {{ article.comment_users.count }} 5
+                </div>
+            </div>
         </div>
     </div>
-    <div class="card mb-3 col-lg-3 col-6">
-        <img src="..." class="card-img-top" alt="...">
+    <div class="card border-0 mb-3 col-lg-3 col-6" style="cursor:pointer" onclick ="location.href='#/';">
+        <img src="https://via.placeholder.com/100X100"/ class="card-img-top" alt="...">
         <div class="card-body">
-            <h5 class="card-title">브랜드명</h5>
-            <p class="card-text">제품명</p>
-            <p class="card-text"><small class="text-muted">가격</small></p>
+            <div class="d-flex align-items-center">
+                <img class='rounded-circle my-3 me-1' src="https://via.placeholder.com/30x30"/ alt="{{ user.image }}">
+                <h5 class="card-title">유저네임{{ user.name }}</h5>
+            </div>  
+            <p class="card-text text-truncate">글내용 {{ articles.detail }}</p>
+
+
+            <!-- {% if request.user.is_authenticated %}
+            {% if request.user in article.like_users.all %}
+                <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart-fill"></i>
+            {% else %}
+                <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart"></i>
+            {% endif %}
+            {% endif %}
+            <span id="like-count" class='px-2'>
+            {{ article.like_users.count }}
+            </span> -->
         </div>
     </div>
-    <div class="card mb-3 col-lg-3 col-6">
-        <img src="..." class="card-img-top" alt="...">
+    <div class="card border-0 mb-3 col-lg-3 col-6" style="cursor:pointer" onclick ="location.href='#/';">
+        <img src="https://via.placeholder.com/100X100"/ class="card-img-top" alt="...">
         <div class="card-body">
-            <h5 class="card-title">브랜드명</h5>
-            <p class="card-text">제품명</p>
-            <p class="card-text"><small class="text-muted">가격</small></p>
+            <div class="d-flex align-items-center">
+                <img class='rounded-circle my-3 me-1' src="https://via.placeholder.com/30x30"/ alt="{{ user.image }}">
+                <h5 class="card-title">유저네임{{ user.name }}</h5>
+            </div>  
+            <p class="card-text text-truncate">글내용 {{ articles.detail }}</p>
+            {% if request.user.is_authenticated %}
+            {% if request.user in article.like_users.all %}
+                <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart-fill"></i>
+            {% else %}
+                <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart"></i>
+            {% endif %}
+            {% endif %}
+            <span id="like-count" class='px-2'>
+            {{ article.like_users.count }}
+            </span>
         </div>
     </div>
-    <div class="card mb-3 col-lg-3 col-6">
-        <img src="..." class="card-img-top" alt="...">
+    <div class="card border-0 mb-3 col-lg-3 col-6" style="cursor:pointer" onclick ="location.href='#/';">
+        <img src="https://via.placeholder.com/100X100"/ class="card-img-top" alt="...">
         <div class="card-body">
-            <h5 class="card-title">브랜드명</h5>
-            <p class="card-text">제품명</p>
-            <p class="card-text"><small class="text-muted">가격</small></p>
+            <div class="d-flex align-items-center">
+                <img class='rounded-circle my-3 me-1' src="https://via.placeholder.com/30x30"/ alt="{{ user.image }}">
+                <h5 class="card-title">유저네임{{ user.name }}</h5>
+            </div>  
+            <p class="card-text text-truncate">글내용 {{ articles.detail }}</p>
+            {% if request.user.is_authenticated %}
+            {% if request.user in article.like_users.all %}
+                <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart-fill"></i>
+            {% else %}
+                <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart"></i>
+            {% endif %}
+            {% endif %}
+            <span id="like-count" class='px-2'>
+            {{ article.like_users.count }}
+            </span>
+            
         </div>
     </div>
 </div>
