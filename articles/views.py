@@ -1,36 +1,41 @@
 from django.shortcuts import render, redirect
-from .models import Articles, Photo
-from .models import Articles, Category, Comment
-
-from .forms import ArticleForm, CommentForm
+from .models import Articles
+from .models import Articles, Category, Comment, Image
+from .forms import ArticleForm, CommentForm, ImageForm
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+from django.db import transaction
+
 
 # Create your views here.
 def index(request):
     return render(request, "articles/index.html")
 
-
+@login_required
 def create(request):
     if request.method == "POST":
         article_forms = ArticleForm(request.POST, request.FILES)
-        if article_forms.is_valid():
+        image_form = ImageForm(request.POST, request.FILES)
+        images = request.FILES.getlist("image")
+        if article_forms.is_valid() and image_form.is_valid():
             article_form = article_forms.save(commit=False)
             article_form.user = request.user
-            article_form.save()
-            for img in request.FILES.getlist('imgs'):
-                photo = Photo()
-                photo.post = article_form
-                photo.image = img
-                photo.save()
+            if len(images):
+                for image in images:
+                    image_instance = Image(articles=article_form, image=image)
+                    article_form.save()
+                    image_instance.save()
+            else:
+                article_form.save()
             return redirect("articles:index")
     else:
         article_form = ArticleForm()
+        image_form = ImageForm()
     context = {
         "article_form": article_form,
+        "image_form": image_form,
     }
     return render(request, "articles/create.html", context)
 
