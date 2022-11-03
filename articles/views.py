@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Articles, Category
+
+from .models import Articles, Category, Comment
+
 from .forms import ArticleForm, CommentForm
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
@@ -89,3 +91,31 @@ def like(request, pk):
         article.like_users.add(request.user)
         is_liked = True
     return JsonResponse({"isLiked": is_liked, "likeCount": article.like_users.count()})
+
+
+def comment(request, pk):
+    article = Articles.objects.get(pk=pk)
+    comment_form = CommentForm(request.POST)
+    if comment_form.is_valid():
+        comment = comment_form.save(commit=False)
+        comment.articles = article
+        comment.user = request.user
+        comment.save()
+        context = {
+            "content": comment.content,
+            "userName": comment.user.username,
+            "userImgUrl": comment.user.profile.image.url,
+            "created": comment.create_at,
+        }
+        return JsonResponse(context)
+    return redirect("articles:detail", article.pk)
+
+
+def comment_d(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    comment.delete()
+    return redirect("articles:detail", comment.articles.pk)
+
+
+def append(request):
+    return render(request, "append.html")
