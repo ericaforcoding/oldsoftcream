@@ -27,7 +27,7 @@
 
 <div class="row mt-5">
     <div class="col-3">
-        <div class="text-center" style="cursor:pointer" onclick ="location.href='#/';">
+        <div class="text-center" style="cursor:pointer" onclick ="location.href='{% url "articles:category" 1 %}';">
             <picture class="img-fluid">
                 <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
                 <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
@@ -36,16 +36,7 @@
         </div>
     </div>
     <div class="col-3">
-        <div class="text-center"style="cursor:pointer" onclick ="location.href='#/';">
-            <picture class="img-fluid">
-                <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
-                <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
-                <p class="text-center">Jordan</p>
-            </picture>
-        </div>
-    </div>
-    <div class="col-3">
-        <div class="text-center" style="cursor:pointer" onclick ="location.href='#/';">
+        <div class="text-center" style="cursor:pointer" onclick ="location.href='{% url "articles:category" 2 %}';">
             <picture class="img-fluid">
                 <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
                 <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
@@ -54,11 +45,20 @@
         </div>
     </div>
     <div class="col-3">
-        <div class="text-center" style="cursor:pointer" onclick ="location.href='#/';">
+        <div class="text-center" style="cursor:pointer" onclick ="location.href='{% url "articles:category" 3 %}';">
             <picture class="img-fluid">
                 <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
                 <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
                 <p class="text-center">New Balance</p>
+            </picture>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="text-center" style="cursor:pointer" onclick ="location.href='{% url "articles:category" 4 %}';">
+            <picture class="img-fluid">
+                <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
+                <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
+                <p class="text-center">ETC</p>
             </picture>
         </div>
     </div>

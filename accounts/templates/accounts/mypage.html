@@ -42,6 +42,10 @@
             <p class="small fw-bold me-4 text-primary">팔로워 <span id='followers' class='text-dark'>{{ user.followers.count }}</span></p>
             <p class="small fw-bold text-primary">팔로잉 <span id='followings' class='text-dark'>{{ user.followings.count }}</span></p>
         </div>
+        <p>팔로우한 브랜드</p>
+        {% for c in user.category_followings.all %}
+        <p>{{ c.name }}</p>
+        {% endfor %}
         <div class="row g-3 my-3">
             <div class="col-6 col-md-3">
                 <div class="card">

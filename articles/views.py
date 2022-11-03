@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from .models import Articles
+from .models import Articles, Category
 from .forms import ArticleForm, CommentForm
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
 
 # Create your views here.
 def index(request):
@@ -59,20 +60,23 @@ def delete(request, pk):
     return redirect("articles:index")
 
 
-def category(request):
-    category = request.GET.get("category")
+def category(request, category_pk):
+    category = Category.objects.get(pk=category_pk)
     category_articles = Articles.objects.filter(category=category)
     context = {"category": category, "category_articles": category_articles}
     return render(request, "articles/category.html", context)
 
-
-def user_page(request, user_pk):
-    user = get_user_model().objects.get(pk=user_pk)
-    # articles = Articles.objects.filter(user=user)
-    context = {'user': user}
-    return render(request, 'articles/user_page.html', context)
-
-from django.http import JsonResponse
+@login_required
+def category_follow(request, category_pk):
+    category = Category.objects.get(pk=category_pk)
+    if request.user in category.category_followers.all():
+        category.category_followers.remove(request.user)
+        category_follow = False
+    else:
+        category.category_followers.add(request.user)
+        category_follow = True
+    return JsonResponse({'categoryFollow': category_follow, 'followCount': category.category_followers.count()})
+    
 
 
 @login_required
