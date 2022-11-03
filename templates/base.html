@@ -9,9 +9,140 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
         <title>Soft Cream</title>
         {% bootstrap_css %}
+
         <link rel="shortcut icon" type="image/png" href="{% static 'images/shoes.png' %}"/>
+
+        <style>
+          /* The side navigation menu */
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  right: 0;
+  background-color: 255,255,255; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+  transition: margin-left .5s;
+  padding: 20px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+        </style>
+
+        {% block css %}{% endblock css %}
+        <link rel="stylesheet" href="{% static 'css/style.css' %}?{% now 'U' %}">
+
     </head>
+
     <body>
+
+      <div id="mySidenav" class="sidenav">
+        <a class="closebtn ms-0 ps-0" onclick="closeNav()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+          </svg>
+          댓글
+        </a>
+        {% if article %}
+        <div>
+          <div class="d-flex " onclick='location.href="{% url 'accounts:mypage' article.user.pk %}"' style='cursor: pointer;'>
+            <div class='me-2 ms-4'>
+              {% if article.user.profile.image %}
+              <img src="{{ article.user.profile.image.url }}" alt="{{ article.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
+              {% else %}
+              <img src="{% static 'profile/guest.png' %}" alt="guest" style='width:2rem;height:2rem' class='rounded-circle'>
+              {% endif %}
+            </div>
+            <div class='d-flex flex-column'>
+                <p class='p-0 mb-0 text-start fw-bold small' style='font-size:10px'>{{ article.user }}</p>
+                <p class='p-0 mb-0 small'>{{ article.title }}</p>
+            </div>
+          </div>
+          <p class='ms-4'>{{ article.content }}</p>
+        </div>
+        <form id='comment-form' data-article-id="{{ article.pk }}" class='row'>
+            <div class="col-2 mt-4 ps-4" onclick='location.href="{% url 'accounts:mypage' request.user.pk %}"' style='cursor:pointer; margin-top: 1.7rem !important'>
+              {% if request.user.profile.image %}
+              <img src="{{ request.user.profile.image.url }}" alt="{{ request.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
+              {% else %}
+              <img src="{% static 'profile/guest.png' %}" alt="guest" style='width:2rem;height:2rem' class='rounded-circle'>
+              {% endif %}
+            </div>
+            {% csrf_token %}
+            <div class='col-10 ps-0'>
+              {% bootstrap_form form %}
+            </div>
+            <div class='col-12 text-end'>
+              <input type="submit" value="작성" class='btn btn-light '>
+            </div>
+          </form>
+        {% endif %}
+        <div class='ms-2'>
+          {% if article.comment_set %}
+          <p>댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p>
+          <div id='comments'>
+              {% for comment in article.comment_set.all %}
+              <div class="d-flex mb-3">
+                  <div class='me-2' onclick='location.href="{% url 'accounts:mypage' comment.user.pk %}"' style='cursor: pointer;'>
+                      {% if comment.user.profile.image %}
+                      <img src="{{ comment.user.profile.image.url }}" alt="{{ comment.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
+                      {% else %}
+                      <img src="{% static 'profile/guest.png' %}" alt="guest" style='width:2rem;height:2rem' class='rounded-circle'>
+                      {% endif %}
+                  </div>
+                  <div class='d-flex flex-column'>
+                      <p class='p-0 mb-0 text-start fw-bold small' style='font-size:10px'>{{ comment.user }}</p>
+                      <p class='p-0 mb-0 small' style='font-size:10px'>{{ comment.create_at }}</p>
+                  </div>
+                  <div class='ms-3'>
+                      <p class='fw-light'>{{ comment.content }}</p>
+                  </div>
+              </div>
+              {% endfor %}
+          </div>
+          {% endif %}
+          </div>
+      </div>
+      
+      <!-- Use any element to open the sidenav -->
+      
+      <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
+      <div id="main" class='p-0'>
         <nav class="navbar navbar-expand-lg bg-white">
             <div class="container-fluid">
               <a class="navbar-brand fw-bold fs-3 ms-2 pt-0" href="{% url 'accounts:index' %}">Soft Cream</a>
@@ -20,11 +151,9 @@
               </button>
               <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="d-flex navbar-nav mb-2 mb-lg-0 justify-content-end">
-                  {% if request.user.is_authenticated %}
                   <li class="nav-item">
-                    <a class="nav-link mt-1" href="{% url 'articles:create' %}">CREATE</a>
-                  </li>
-                  <li class="nav-item">
+                    {% if request.user.is_authenticated %}
+
                     <a class="nav-link active" aria-current="page" href="{% url 'accounts:profile' request.user.pk %}">
                       {% if request.user.profile.image %}
                       <img src="{{ request.user.profile.image.url }}" style='width:2rem;height:2.2rem' alt="" class='rounded-circle'>
@@ -34,6 +163,14 @@
                       {{ request.user }}
                       {% endif %}
                     </a>
+                    {% endif %}
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                      <a class="nav-link mt-1" href="{% url 'articles:create' %}">CREATE</a>
+                    </li>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link mt-1" href="{% url 'articles:create' %}">CREATE</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link mt-1" href="{% url 'accounts:mypage' request.user.pk %}">Mypage</a>
@@ -63,9 +200,32 @@
               </div>
             </div>
           </nav>
+          <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+          <script>
+            const commentForm = document.querySelector('#comment-form')
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+            commentForm.addEventListener('submit', function(event) {
+              event.preventDefault();
+              axios({
+                method: 'post',
+                url: `/articles/comment/${event.target.dataset.articleId}`,
+                headers: {'X-CSRFToken': csrftoken},
+                data: new FormData(commentForm)
+              })
+              .then(response => {
+                const comment = document.querySelector('#comments')
+                const p = document.createElement('p')
+                p.innerText = `${response.data.userName} | ${response.data.content}`
+                const hr = document.createElement('hr')
+                comment.append(p,hr)
+                commentForm.reset()
+                
+              })
+            })
+          </script>
         {% block content %}
         {% endblock %}
-        <footer class="container-fluid text-center sticky-bottom style='background-color:white">
+        <footer class="container-fluid text-center position-fixed-bottom style='background-color:white">
             <h5 class = "mt-3">
                 <a class="text-decoration-none" href="https://github.com/dortkthf">s</a>
                 <a class="text-decoration-none" href="https://github.com/ericaforcoding">o</a>
@@ -78,8 +238,23 @@
                 <a class="text-decoration-none" href="#">m</a>
             </h5>
         </footer>
+      </div>
         {% bootstrap_javascript %}
         {% block script1 %}
         {% endblock script1 %}
+        <script>
+          /* Set the width of the side navigation to 250px */
+          function openNav() {
+            document.getElementById("mySidenav").style.width = "350px";
+            document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+            document.querySelector('#mySidenav').style.backgroundColor = 'white';
+          }
+          /* Set the width of the side navigation to 0 */
+          function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.body.style.backgroundColor = "white";
+          }
+        </script>
+
     </body>
 </html>

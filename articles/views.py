@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from .models import Articles, Photo
+from .models import Articles, Category, Comment
+
 from .forms import ArticleForm, CommentForm
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
 
 # Create your views here.
 def index(request):
@@ -64,20 +67,23 @@ def delete(request, pk):
     return redirect("articles:index")
 
 
-def category(request):
-    category = request.GET.get("category")
+def category(request, category_pk):
+    category = Category.objects.get(pk=category_pk)
     category_articles = Articles.objects.filter(category=category)
     context = {"category": category, "category_articles": category_articles}
     return render(request, "articles/category.html", context)
 
-
-def user_page(request, user_pk):
-    user = get_user_model().objects.get(pk=user_pk)
-    # articles = Articles.objects.filter(user=user)
-    context = {'user': user}
-    return render(request, 'articles/user_page.html', context)
-
-from django.http import JsonResponse
+@login_required
+def category_follow(request, category_pk):
+    category = Category.objects.get(pk=category_pk)
+    if request.user in category.category_followers.all():
+        category.category_followers.remove(request.user)
+        category_follow = False
+    else:
+        category.category_followers.add(request.user)
+        category_follow = True
+    return JsonResponse({'categoryFollow': category_follow, 'followCount': category.category_followers.count()})
+    
 
 
 @login_required
@@ -92,20 +98,29 @@ def like(request, pk):
     return JsonResponse({"isLiked": is_liked, "likeCount": article.like_users.count()})
 
 
+def comment(request, pk):
+    article = Articles.objects.get(pk=pk)
+    comment_form = CommentForm(request.POST)
+    if comment_form.is_valid():
+        comment = comment_form.save(commit=False)
+        comment.articles = article
+        comment.user = request.user
+        comment.save()
+        context = {
+            "content": comment.content,
+            "userName": comment.user.username,
+            "userImgUrl": comment.user.profile.image.url,
+            "created": comment.create_at,
+        }
+        return JsonResponse(context)
+    return redirect("articles:detail", article.pk)
 
-# class PostViewSet(ModelViewSet):
-#     queryset = Post.objects.all().order_by('-created_at')
-#     serializer_class = PostSerializer
-#     pagination_class = CustomResultsSetPagination
-#     filter_backends = [DjangoFilterBackend]
-#     filterset_class = PostFilter
-#     permission_classes = [IsSuperUserOrReadOnly]
 
-# # urls.py
+def comment_d(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    comment.delete()
+    return redirect("articles:detail", comment.articles.pk)
 
-# router = routers.DefaultRouter()
-# router.register(r'posts', PostViewSet)
 
-# urlpatterns = [
-#     path("", include(router.urls)),
-# ]
+def append(request):
+    return render(request, "append.html")

@@ -42,68 +42,52 @@
             <p class="small fw-bold me-4 text-primary">팔로워 <span id='followers' class='text-dark'>{{ user.followers.count }}</span></p>
             <p class="small fw-bold text-primary">팔로잉 <span id='followings' class='text-dark'>{{ user.followings.count }}</span></p>
         </div>
+        <p>팔로우한 브랜드</p>
+        {% for c in user.category_followings.all %}
+        <p>{{ c.name }}</p>
+        {% endfor %}
         <div class="row g-3 my-3">
-            <div class="col-6 col-md-3">
+            {% for article in user.like_articles.all %}
+            <div class="col-6  col-md-3" onclick='location.href="{% url 'articles:detail' article.pk %}"' style='cursor: pointer;'>
                 <div class="card">
-                    <img src="https://dummyimage.com/600x400/000/fff" class="card-img-top" alt="...">
+                    {% if article.image %}
+                    <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.image }}">
+                    {% else %}
+                    <img src={% static 'images/noimage.jpg' %} class="card-img-top" alt="noimage">
+                    {% endif %}
                     <div class="card-body">
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     </div>
-                  </div>
+                </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="card">
-                    <img src="https://dummyimage.com/600x400/000/fff" class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                  </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card">
-                    <img src="https://dummyimage.com/600x400/000/fff" class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                  </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card">
-                    <img src="https://dummyimage.com/600x400/000/fff" class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                  </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </div>
-    {% endblock  %}
-    {% block script1 %}
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-    <script>
-        const followBtn = document.querySelector('#follow')
-        followBtn.addEventListener('click', function(event) {
-            axios({
-                method: 'get',
-                url: `/accounts/follow/${event.target.dataset.userId}/`
-            })
-            .then(response => {
-                if( response.data.is_followed == true) {
-                    event.target.classList.remove('btn-dark')
-                    event.target.classList.add('btn-light')
-                    followBtn.innerText= '팔로잉'
-                } else {
-                    event.target.classList.remove('btn-light')
-                    event.target.classList.add('btn-dark')
-                    followBtn.innerText='팔로우'
-                }
-                const followers = document.querySelector('#followers')
-                const followings = document.querySelector('#followings')
-                followers.innerText = response.data.followersC
-                followings.innerText = response.data.followingsC
-            })
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const followBtn = document.querySelector('#follow')
+    followBtn.addEventListener('click', function(event) {
+        axios({
+            method: 'get',
+            url: `/accounts/follow/${event.target.dataset.userId}/`
         })
-    </script>
-    {% endblock script1 %}
+        .then(response => {
+            if( response.data.is_followed == true) {
+                event.target.classList.remove('btn-dark')
+                event.target.classList.add('btn-light')
+                followBtn.innerText= '팔로잉'
+            } else {
+                event.target.classList.remove('btn-light')
+                event.target.classList.add('btn-dark')
+                followBtn.innerText='팔로우'
+            }
+            const followers = document.querySelector('#followers')
+            const followings = document.querySelector('#followings')
+            followers.innerText = response.data.followersC
+            followings.innerText = response.data.followingsC
+        })
+    })
+</script>
+    {% endblock  %}
+
