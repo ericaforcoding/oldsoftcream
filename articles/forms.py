@@ -1,11 +1,11 @@
-from xml.etree.ElementTree import Comment
 from django import forms
-from .models import Articles, Comment
+from .models import Articles, Comment, Category
+
 
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Articles
-        fields = ['title', 'content', 'image']
+        fields = ('title', 'content', 'image', 'category')
 
 class CommentForm(forms.ModelForm):
     class Meta:
