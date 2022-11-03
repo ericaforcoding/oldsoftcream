@@ -27,7 +27,7 @@ class CommentForm(forms.ModelForm):
 
 
 # class ImageForm(forms.ModelForm):
-#     class Meta:
+#     class Meta:serializers
 #         model = Image
 #         fields = ['file']
 # ImageFormSet = forms.inlineformset_factory(Articles, Image, form=ImageForm, extra=3)

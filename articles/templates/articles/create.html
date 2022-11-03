@@ -8,8 +8,11 @@
   <form action="{% url 'articles:create' %}" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       {% bootstrap_form article_form %}
+
+      <div class="my-2"><input type="file" name="imgs" multiple></div>
+      
       <div class="d-flex justify-content-between">
-        <div><input type="submit" value="create"></div>
+        <div class="my-2"><input type="submit" value="create"></div>
         <div><a href="{% url 'articles:index' %}" class="text-decoration-none" style="color:rgb(207, 178, 132)">Previous</a></div>
       </div>
   </form>

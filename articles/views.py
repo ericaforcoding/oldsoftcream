@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-
+from .models import Articles, Photo
 from .models import Articles, Category, Comment
 
 from .forms import ArticleForm, CommentForm
@@ -21,6 +21,11 @@ def create(request):
             article_form = article_forms.save(commit=False)
             article_form.user = request.user
             article_form.save()
+            for img in request.FILES.getlist('imgs'):
+                photo = Photo()
+                photo.post = article_form
+                photo.image = img
+                photo.save()
             return redirect("articles:index")
     else:
         article_form = ArticleForm()
