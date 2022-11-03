@@ -79,15 +79,15 @@
     </div>
 
 
-    <!-- <form action="{% url 'articles:detail' article.pk %}" method="POST">
+    <form action="{% url 'articles:detail' article.pk %}" method="POST">
         {% csrf_token %}
         {% bootstrap_form form %}
         <input type="submit" value="작성">
         <a href="{% url 'articles:delete' article.pk %}">글 삭제</a>
-    </form> -->
+    </form>
 </main>
 
-<!-- 
+
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>   
 <script>
     const likeBtn = document.querySelector('#like-btn')
