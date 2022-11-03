@@ -1,12 +1,12 @@
 from django import forms
-from .models import Articles, Comment, Category
+from .models import Articles, Comment, Category, Image
 
 
 
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Articles
-        fields = ('title', 'content', 'image', 'category')
+        fields = ('title', 'content', 'category')
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -25,9 +25,7 @@ class CommentForm(forms.ModelForm):
             "rows": 1,
         }
 
-
-# class ImageForm(forms.ModelForm):
-#     class Meta:serializers
-#         model = Image
-#         fields = ['file']
-# ImageFormSet = forms.inlineformset_factory(Articles, Image, form=ImageForm, extra=3)
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = ['image', ]

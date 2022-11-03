@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
-# from imagekit.models import ProcessedImageField
-# from imagekit.processors import ResizeToFill, Thumbnail
+from imagekit.models import ImageSpecField, ProcessedImageField
+from imagekit.processors import ResizeToFill
 # Create your models here.
 
 
@@ -17,13 +17,7 @@ class Articles(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_articles')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    
-    image = models.ImageField(upload_to='images/', blank=True, null=True)
-
-    def __str__(self):
-        return self.title
-        
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)    
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_articles')
 
 class Comment(models.Model):
@@ -35,3 +29,14 @@ class Comment(models.Model):
 class Photo(models.Model):
     post = models.ForeignKey(Articles, on_delete=models.CASCADE, null=True)
     image = models.ImageField(upload_to='images/', blank=True, null=True)
+
+class Image(models.Model):
+    articles = models.ForeignKey(Articles, on_delete=models.CASCADE)
+    image = ProcessedImageField(upload_to='images/', blank=True,
+                                processors=[ResizeToFill(1200, 960)],
+                                format='JPEG',
+                                options={'quality': 80})
+    image_thumbnail = ImageSpecField(source='image',
+                                processors=[ResizeToFill(200, 200)],
+                                format='JPEG',
+                                options={'quality': 60})
