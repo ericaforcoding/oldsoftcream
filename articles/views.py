@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Articles
+from .models import Articles, Photo
 from .forms import ArticleForm, CommentForm
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
@@ -18,6 +18,11 @@ def create(request):
             article_form = article_forms.save(commit=False)
             article_form.user = request.user
             article_form.save()
+            for img in request.FILES.getlist('imgs'):
+                photo = Photo()
+                photo.post = article_form
+                photo.image = img
+                photo.save()
             return redirect("articles:index")
     else:
         article_form = ArticleForm()
@@ -85,3 +90,22 @@ def like(request, pk):
         article.like_users.add(request.user)
         is_liked = True
     return JsonResponse({"isLiked": is_liked, "likeCount": article.like_users.count()})
+
+
+
+# class PostViewSet(ModelViewSet):
+#     queryset = Post.objects.all().order_by('-created_at')
+#     serializer_class = PostSerializer
+#     pagination_class = CustomResultsSetPagination
+#     filter_backends = [DjangoFilterBackend]
+#     filterset_class = PostFilter
+#     permission_classes = [IsSuperUserOrReadOnly]
+
+# # urls.py
+
+# router = routers.DefaultRouter()
+# router.register(r'posts', PostViewSet)
+
+# urlpatterns = [
+#     path("", include(router.urls)),
+# ]
