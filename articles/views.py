@@ -10,6 +10,7 @@ from django.db import transaction
 
 
 # Create your views here.
+
 def index(request):
     articles = Articles.objects.order_by('-pk')
     image = Image.objects.order_by('-pk')
@@ -58,15 +59,16 @@ def detail(request, pk):
 
 @require_http_methods(["GET", "POST"])
 def update(request, pk):
-    article = get_object_or_404(Articles, pk=pk)
+    article = Articles.objects.get(pk=pk)
+    # image = Image.objects.objects.get(pk=pk)
     if request.method == 'POST':
-        article_form = ArticleForm(request.POST, request.FILES, instance=article)
-        image_form = ImageForm(request.POST, request.FILES, instance=article)
+        article_forms = ArticleForm(request.POST, request.FILES, instance=article)
+        image_forms = ImageForm(request.POST, request.FILES, instance=article)
         images = request.FILES.getlist("image")
-        if article_form.is_valid() and image_form.is_valid():
-            article_form = article_forms.save(commit=False)
+        if article_forms.is_valid() and image_form.is_valid():
+            article = article_forms.save(commit=False)
             image_form = image_forms.save(commit=False)
-            article_form.user = request.user
+            article_form.user = article
             if len(images):
                 for image in images:
                     image_instance = Image(articles=article_form, image=image)

@@ -61,7 +61,6 @@
     <div class="mySlides fade">
       <div class="numbertext">{{ forloop.counter }} / {{ article.articles_image.count }}</div>
       <img src="{{ i.image.url }}" style="width:100%">
-      <div class="text">Caption Text</div>
     </div>
     {% endfor %}
   
@@ -85,12 +84,6 @@
     </div>
 
 
-    <p class='my-2'>{{ article.category.name }}</p>
-    <p style="font-size: 2rem;" class="my-2"> Title: {{ article.title }} </p>
-    <p class="my-2"> Content: {{ article.content }} </p>
-    <p class="my-2"> Updated: {{ article.updated_at }} </p>
-
-
     <div class="d-flex justify-content-between">
         <div class='d-flex justify-content-center my-3 text-danger'>
             {% if request.user.is_authenticated %}
@@ -110,8 +103,7 @@
             </span>
         </div>
     </div>
-
-    <p style="font-size: 2rem;" class="my-2"> 제목 {{ article.title }} </p>
+    
     <p class="my-2"> 내용 {{ article.content }} </p>
     <div>
     {% if article.comment_set %}
