@@ -3,7 +3,7 @@
 {% load static %}
 {% block content %}
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade2" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-footer flex-column">
@@ -58,7 +58,7 @@
 
     <!-- Full-width images with number and caption text -->
     {% for i in article.articles_image.all %}
-    <div class="mySlides fade">
+    <div class="mySlides">
       <div class="numbertext">{{ forloop.counter }} / {{ article.articles_image.count }}</div>
       <img src="{{ i.image.url }}" style="width:100%">
     </div>
@@ -77,12 +77,12 @@
 {% endfor %}
   </div>
 
+
     <div class="container">
         <p style="font-size: 2rem;" class="my-2">{{ article.title }}</p>
         <p class="my-2"> Content: {{ article.content }} </p>
         <p class="my-2"> Updated: {{ article.updated_at }} </p>
     </div>
-
 
     <div class="d-flex justify-content-between">
         <div class='d-flex justify-content-center my-3 text-danger'>
@@ -99,7 +99,7 @@
         </div>
         <div class='my-3'>
             <span onclick="openNav()">
-                <i class="bi bi-chat pb-1" style='cursor: pointer;'></i>
+                <i class="bi bi-chat mb-3" style='cursor: pointer;'></i>
             </span>
         </div>
     </div>
@@ -107,10 +107,10 @@
     <p class="my-2"> 내용 {{ article.content }} </p>
     <div>
     {% if article.comment_set %}
-    <p>댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p>
+    <p id='comment_c'>댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p>
     <div>
         {% for comment in article.comment_set.all %}
-        <div class='d-flex justify-content-between'>
+        <div class='d-flex justify-content-between' id='reply{{ comment.pk }}'>
             <div class="d-flex mb-3">
                 <div class='me-2' onclick='location.href="{% url 'accounts:mypage' comment.user.pk %}"' style='cursor: pointer;'>
                     {% if comment.user.profile.image %}
@@ -130,7 +130,8 @@
             {% if request.user == comment.user %}
             <div>
                 <a href="" class='btn btn-light px-1 py-1'>수정</a>
-                <a href="{% url 'articles:comment_d' comment.pk %}" class="btn btn-secondary px-1 py-1">삭제</a>
+                <span onclick='replyDelete({{ comment.pk }});' class='btn btn-secondary px-1 py-1'>삭제</span>
+                {% comment %} <a href="{% url 'articles:comment_d' comment.pk %}" class="btn btn-secondary px-1 py-1">삭제</a> {% endcomment %}
             </div>
             {% endif %}
         </div>
@@ -217,5 +218,32 @@ function showSlides(n) {
         })
     })
 </script>
+{% comment %} 댓글 {% endcomment %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
 
+    const replyDelete = (id) => {
+        let param = {
+            'replyId' : id
+        }
+        $.ajax({
+            url : '{% url 'articles:comment_d' %}',
+            type : 'POST',
+            headers : {
+                'X-CSRFTOKEN' : '{{ csrf_token }}'
+            },
+            data : JSON.stringify(param),
+            success:function(data){
+                if (data.result == 'ok') {
+                    let replyTr = document.querySelector(`#reply${id}`)
+                    replyTr.remove()
+                    alert('삭제 하였습니다')
+                }
+            },
+            error: function(){
+                alert('X')
+            }
+        })
+    }
+</script>
 {% endblock %}

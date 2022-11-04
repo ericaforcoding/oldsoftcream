@@ -8,17 +8,22 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db import transaction
 
+import json
+
+from django.db.models import Q
+
 
 # Create your views here.
 
 def index(request):
-    articles = Articles.objects.order_by('-pk')
-    image = Image.objects.order_by('-pk')
+    articles = Articles.objects.order_by("-pk")
+    image = Image.objects.order_by("-pk")
     context = {
-        'articles': articles,
-        'image':image,
+        "articles": articles,
+        "image": image,
     }
     return render(request, "articles/index.html", context)
+
 
 @login_required
 def create(request):
@@ -64,6 +69,8 @@ def update(request, pk):
     if request.method == 'POST':
         article_forms = ArticleForm(request.POST, request.FILES, instance=article)
         image_forms = ImageForm(request.POST, request.FILES, instance=article)
+
+
         images = request.FILES.getlist("image")
         if article_forms.is_valid() and image_form.is_valid():
             article = article_forms.save(commit=False)
@@ -99,6 +106,7 @@ def category(request, category_pk):
     context = {"category": category, "category_articles": category_articles}
     return render(request, "articles/category.html", context)
 
+
 @login_required
 def category_follow(request, category_pk):
     category = Category.objects.get(pk=category_pk)
@@ -108,8 +116,12 @@ def category_follow(request, category_pk):
     else:
         category.category_followers.add(request.user)
         category_follow = True
-    return JsonResponse({'categoryFollow': category_follow, 'followCount': category.category_followers.count()})
-    
+    return JsonResponse(
+        {
+            "categoryFollow": category_follow,
+            "followCount": category.category_followers.count(),
+        }
+    )
 
 
 @login_required
@@ -137,16 +149,55 @@ def comment(request, pk):
             "userName": comment.user.username,
             "userImgUrl": comment.user.profile.image.url,
             "created": comment.create_at,
+            "comment_count": article.comment_set.count(),
+            "user": comment.user.pk,
         }
         return JsonResponse(context)
     return redirect("articles:detail", article.pk)
 
 
-def comment_d(request, pk):
-    comment = Comment.objects.get(pk=pk)
-    comment.delete()
-    return redirect("articles:detail", comment.articles.pk)
+def comment_d(request):
+    jsonObject = json.loads(request.body)
+    context = {"result": "no"}
+    reply = Comment.objects.filter(id=jsonObject.get("replyId"))
+
+    if reply is not None:
+        reply.delete()
+        context = {
+            "result": "ok",
+        }
+        return JsonResponse(context)
+    return JsonResponse(context)
 
 
-def append(request):
-    return render(request, "append.html")
+def search(request):
+    searched = request.GET.get("searched", False)
+    field = request.GET.get("field")
+    if field == "1":
+        articles = Articles.objects.filter(
+            Q(title__contains=searched)
+            | Q(content__contains=searched)
+            | Q(user__username__contains=searched)
+        ).order_by("-pk")
+    elif field == "2":
+        articles = Articles.objects.filter(Q(title__contains=searched)).order_by("-pk")
+    elif field == "3":
+        articles = Articles.objects.filter(Q(content__contains=searched)).order_by(
+            "-pk"
+        )
+    elif field == "4":
+        articles = Articles.objects.filter(
+            Q(user__username__contains=searched)
+        ).order_by("-pk")
+    if not searched:
+        articles = []
+        text = "검색어를 입력하세요."
+    elif len(articles) == 0:
+        text = "검색 결과가 없습니다."
+    else:
+        text = ""
+    context = {
+        "articles": articles,
+        "text": text,
+    }
+    return render(request, "articles/search.html", context)
