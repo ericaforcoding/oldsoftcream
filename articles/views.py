@@ -7,11 +7,12 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db import transaction
-
+import json
 
 # Create your views here.
 def index(request):
     return render(request, "articles/index.html")
+
 
 @login_required
 def create(request):
@@ -53,7 +54,7 @@ def detail(request, pk):
 @require_http_methods(["GET", "POST"])
 def update(request, pk):
     article = get_object_or_404(Articles, pk=pk)
-    if request.method == 'POST':
+    if request.method == "POST":
         article_form = ArticleForm(request.POST, request.FILES, instance=article)
         if article_form.is_valid():
             article_form.save()
@@ -78,6 +79,7 @@ def category(request, category_pk):
     context = {"category": category, "category_articles": category_articles}
     return render(request, "articles/category.html", context)
 
+
 @login_required
 def category_follow(request, category_pk):
     category = Category.objects.get(pk=category_pk)
@@ -87,8 +89,12 @@ def category_follow(request, category_pk):
     else:
         category.category_followers.add(request.user)
         category_follow = True
-    return JsonResponse({'categoryFollow': category_follow, 'followCount': category.category_followers.count()})
-    
+    return JsonResponse(
+        {
+            "categoryFollow": category_follow,
+            "followCount": category.category_followers.count(),
+        }
+    )
 
 
 @login_required
@@ -116,16 +122,22 @@ def comment(request, pk):
             "userName": comment.user.username,
             "userImgUrl": comment.user.profile.image.url,
             "created": comment.create_at,
+            "comment_count": article.comment_set.count(),
+            "user": comment.user.pk,
         }
         return JsonResponse(context)
     return redirect("articles:detail", article.pk)
 
 
-def comment_d(request, pk):
-    comment = Comment.objects.get(pk=pk)
-    comment.delete()
-    return redirect("articles:detail", comment.articles.pk)
+def comment_d(request):
+    jsonObject = json.loads(request.body)
+    context = {"result": "no"}
+    reply = Comment.objects.filter(id=jsonObject.get("replyId"))
 
-
-def append(request):
-    return render(request, "append.html")
+    if reply is not None:
+        reply.delete()
+        context = {
+            "result": "ok",
+        }
+        return JsonResponse(context)
+    return JsonResponse(context)

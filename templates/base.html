@@ -114,17 +114,17 @@
         {% endif %}
         <div class='ms-2'>
           {% if article.comment_set %}
-          <p>댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p>
+          <p id='comment_count'>댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p>
           <div id='comments'>
               {% for comment in article.comment_set.all %}
               <div class="d-flex mb-3">
-                  <div class='me-2' onclick='location.href="{% url 'accounts:mypage' comment.user.pk %}"' style='cursor: pointer;'>
+                  <a class='me-2' onclick='location.href="{% url 'accounts:mypage' comment.user.pk %}"' style='cursor: pointer;'>
                       {% if comment.user.profile.image %}
                       <img src="{{ comment.user.profile.image.url }}" alt="{{ comment.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
                       {% else %}
                       <img src="{% static 'profile/guest.png' %}" alt="guest" style='width:2rem;height:2rem' class='rounded-circle'>
                       {% endif %}
-                  </div>
+                  </a>
                   <div class='d-flex flex-column'>
                       <p class='p-0 mb-0 text-start fw-bold small' style='font-size:10px'>{{ comment.user }}</p>
                       <p class='p-0 mb-0 small' style='font-size:10px'>{{ comment.create_at }}</p>
@@ -135,6 +135,8 @@
               </div>
               {% endfor %}
           </div>
+          {% else %}
+          <p id='comment_count'>댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p>
           {% endif %}
           </div>
       </div>
@@ -154,7 +156,7 @@
                   <li class="nav-item">
                     {% if request.user.is_authenticated %}
 
-                    <a class="nav-link active" aria-current="page" href="{% url 'accounts:profile' request.user.pk %}">
+                    <a class="nav-link" aria-current="page" href="{% url 'accounts:profile' request.user.pk %}">
                       {% if request.user.profile.image %}
                       <img src="{{ request.user.profile.image.url }}" style='width:2rem;height:2.2rem' alt="" class='rounded-circle'>
                       {{ request.user }}
@@ -183,10 +185,10 @@
                   </li>
                   {% else %}
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'accounts:login' %}">Login</a>
+                    <a class="nav-link " aria-current="page" href="{% url 'accounts:login' %}">Login</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'accounts:signup' %}">Signup</a>
+                    <a class="nav-link " aria-current="page" href="{% url 'accounts:signup' %}">Signup</a>
                   </li>
                   {% endif %}
                 </ul>
@@ -211,10 +213,16 @@
               })
               .then(response => {
                 const comment = document.querySelector('#comments')
+                const comment_c = document.querySelector('#comment_count')
+                comment_c.innerText = `댓글 ${response.data.comment_count}개`
+
+
+
                 const p = document.createElement('p')
                 p.innerText = `${response.data.userName} | ${response.data.content}`
                 const hr = document.createElement('hr')
                 comment.append(p,hr)
+                
                 commentForm.reset()
                 
               })
