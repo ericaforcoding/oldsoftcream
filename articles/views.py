@@ -11,7 +11,7 @@ from django.db import transaction
 
 # Create your views here.
 def index(request):
-        
+
     return render(request, "articles/index.html")
 
 @login_required
