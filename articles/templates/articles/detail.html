@@ -57,9 +57,9 @@
 <div class="slideshow-container">
 
     <!-- Full-width images with number and caption text -->
-    {% for i in article.image_set.all %}
+    {% for i in article.articles_image.all %}
     <div class="mySlides fade">
-      <div class="numbertext">{{ forloop.counter }} / {{ article.image_set.count }}</div>
+      <div class="numbertext">{{ forloop.counter }} / {{ article.articles_image.count }}</div>
       <img src="{{ i.image.url }}" style="width:100%">
       <div class="text">Caption Text</div>
     </div>
@@ -73,7 +73,7 @@
   
   <!-- The dots/circles -->
   <div style="text-align:center">
-{% for i in article.image_set.all %}
+{% for i in article.articles_image.all %}
     <span class="dot" onclick="currentSlide({{ forloop.counter }})"></span>
 {% endfor %}
   </div>
