@@ -40,8 +40,8 @@
     <div class="col-3">
         <div class="text-center" style="cursor:pointer" onclick ="location.href='{% url "articles:category" 1 %}';">
             <picture class="img-fluid">
-                <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
-                <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
+                <source srcset="{% static 'images/나이키인덱스 (3).png' %}" media="(min-width: 700px)" class ="rounded" style="width:100%">
+                <img src="{% static 'images/나이키인덱스 (100).png' %}" media="(min-width: 500px)" class="rounded-pill" style="width:100%">
                 <p class="text-center">Nike</p>
             </picture>
         </div>
@@ -49,8 +49,8 @@
     <div class="col-3">
         <div class="text-center" style="cursor:pointer" onclick ="location.href='{% url "articles:category" 2 %}';">
             <picture class="img-fluid">
-                <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
-                <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
+                <source srcset="{% static 'images/아디다스인덱스2.png' %}" media="(min-width: 700px)" class ="rounded" style="width:100%">
+                <img src="{% static 'images/아디다스인덱스.jpg' %}" media="(min-width: 500px)" class="rounded-pill" style="width:100%">
                 <p class="text-center">Adidas</p>
             </picture>
         </div>
@@ -58,8 +58,8 @@
     <div class="col-3">
         <div class="text-center" style="cursor:pointer" onclick ="location.href='{% url "articles:category" 3 %}';">
             <picture class="img-fluid">
-                <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
-                <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
+                <source srcset="{% static 'images/New_Balance_logo.300.png' %}" media="(min-width: 700px)" class ="rounded" style="width:100%">
+                <img src="{% static 'images/New_Balance_logo.100.png' %}" media="(min-width: 500px)" class="rounded-pill" style="width:100%">
                 <p class="text-center">New Balance</p>
             </picture>
         </div>
@@ -67,8 +67,8 @@
     <div class="col-3">
         <div class="text-center" style="cursor:pointer" onclick ="location.href='{% url "articles:category" 4 %}';">
             <picture class="img-fluid">
-                <source srcset="https://via.placeholder.com/300X100"/ media="(min-width: 700px)" class ="rounded" style="width:100%">
-                <img src="https://via.placeholder.com/100X100"/ media="(min-width: 500px)" class="rounded-pill" style="width:100%">
+                <source srcset="{% static 'images/jordan300.jpg' %}" media="(min-width: 700px)" class ="rounded" style="width:100%">
+                <img src="{% static 'images/jordan.png' %}" media="(min-width: 500px)" class="rounded-pill" style="width:100%">
                 <p class="text-center">ETC</p>
             </picture>
         </div>
@@ -95,23 +95,51 @@
                 <a href="{% url 'articles:detail' article.pk %}"><img src="{{ image.image.url }}" alt="{{ article.image }}" class="card-body" style='width:100%;'></a>
                 {% endif %}
                 {% endfor %}
-                {% else %}
+                {% else %}/articles/3/detail
                 <a href="{% url 'articles:detail' article.pk %}"><img src="{% static 'images/6c757d.jpg' %}" alt="" class="rounded-4" style='width:100%;'></a>
             {% endif %}
     </div>
     <div class="card-body">
         <div class="d-flex align-items-center">
-            <div class='me-3' onclick='location.href="{% url 'accounts:profile' user.pk %}"' style='cursor: pointer;'>
-                <!-- {% if user.profile.image %} -->
-                <img src="{{ user.profile.image.url }}" alt="" style='width:5rem; height:5rem' class='rounded-circle'>
-                <h5 class="card-title">{{ user }}</h5>
-                <!-- {% endif %} -->
+            <div class='me-3' onclick='location.href="{% url 'accounts:profile' article.user.pk %}';" style='cursor: pointer;'>
+                {% if article.user.profile.image %}
+                <img src="{{ article.user.profile.image.url }}" alt="" style='width:5rem; height:5rem' class='rounded-circle'>
+                {% else %}
+                <img src="{% static 'profile/guest.jpg' %}">
+                {% endif %}
+                <h5 class="card-title">{{ article.user.username }}</h5>
                 <P>{{ article.content }}</P>
-                <P>{{ article.like_users.count }}</P>
-                <P>{{ article.comment_set.count }}</P>
+                <div class="d-flex justify-content-between">
+                    <div class='d-flex justify-content-center my-3 text-danger'>
+                        {% if request.user in article.like_users.all %}
+                        <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart-fill"></i>
+                        {% else %}
+                        <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart"></i>
+                        {% endif %}
+                        <span id="like-count" class='px-2'>
+                            {{ article.like_users.count }}
+                        </span>
+                    </div>
+                    <div class='my-3'>
+                        <span onclick="openNav()">
+                            <i class="bi bi-chat pb-1" style='cursor: pointer;'></i>
+                            {{ article.comment_set.count }}
+                        </span>
+                    </div>
+                </div>
+
+
+
+                        <!-- <span onclick="openNav()">
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+
+
 {% endblock %}
+
