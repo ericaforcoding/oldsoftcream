@@ -27,8 +27,12 @@
     <div class='row'>
     {% for article in category_articles %}
         <div class='col-6 col-sm-3'>
-            {% if article.image %}
-            <a href="{% url 'articles:detail' article.pk %}"><img src="{{ article.image.url }}" alt="{{ article.image }}" class="rounded-4" style='width:100%;'></a>
+            {% if article.articles_image.all|length %}
+                {% for image in article.articles_image.all %}
+                {% if forloop.counter == 1 %}
+                <a href="{% url 'articles:detail' article.pk %}"><img src="{{ image.image.url }}" alt="{{ image.image }}" class="rounded-4" style='width:100%;'></a>
+                {% endif %}
+                {% endfor %}
             {% else %}
             <a href="{% url 'articles:detail' article.pk %}"><img src="{% static 'images/6c757d.jpg' %}" alt="" class="rounded-4" style='width:100%;'></a>
             {% endif %}
