@@ -11,8 +11,13 @@ from django.db import transaction
 
 # Create your views here.
 def index(request):
-
-    return render(request, "articles/index.html")
+    articles = Articles.objects.order_by('-pk')
+    image = Image.objects.order_by('-pk')
+    context = {
+        'articles': articles,
+        'image':image,
+    }
+    return render(request, "articles/index.html", context)
 
 @login_required
 def create(request):
