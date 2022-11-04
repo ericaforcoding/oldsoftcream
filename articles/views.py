@@ -13,14 +13,13 @@ import json
 from django.db.models import Q
 
 
-
 # Create your views here.
 def index(request):
-    articles = Articles.objects.order_by('-pk')
-    image = Image.objects.order_by('-pk')
+    articles = Articles.objects.order_by("-pk")
+    image = Image.objects.order_by("-pk")
     context = {
-        'articles': articles,
-        'image':image,
+        "articles": articles,
+        "image": image,
     }
     return render(request, "articles/index.html", context)
 
@@ -167,21 +166,25 @@ def comment_d(request):
     return JsonResponse(context)
 
 
-def append(request):
-    return render(request, "append.html")
-
-
 def search(request):
-    searched = request.GET.get('searched', False)
-    field = request.GET.get('field')
-    if field == '1':
-        articles = Articles.objects.filter(Q(title__contains=searched) | Q(content__contains=searched) | Q(user__username__contains=searched)).order_by('-pk')
-    elif field == '2':
-        articles = Articles.objects.filter(Q(title__contains=searched)).order_by('-pk')
-    elif field == '3':
-        articles = Articles.objects.filter(Q(content__contains=searched)).order_by('-pk')
-    elif field == '4':
-        articles = Articles.objects.filter(Q(user__username__contains=searched)).order_by('-pk')
+    searched = request.GET.get("searched", False)
+    field = request.GET.get("field")
+    if field == "1":
+        articles = Articles.objects.filter(
+            Q(title__contains=searched)
+            | Q(content__contains=searched)
+            | Q(user__username__contains=searched)
+        ).order_by("-pk")
+    elif field == "2":
+        articles = Articles.objects.filter(Q(title__contains=searched)).order_by("-pk")
+    elif field == "3":
+        articles = Articles.objects.filter(Q(content__contains=searched)).order_by(
+            "-pk"
+        )
+    elif field == "4":
+        articles = Articles.objects.filter(
+            Q(user__username__contains=searched)
+        ).order_by("-pk")
     if not searched:
         articles = []
         text = "검색어를 입력하세요."
@@ -190,8 +193,7 @@ def search(request):
     else:
         text = ""
     context = {
-        'articles' : articles,
-        "text" : text,
-        }
-    return render(request, 'articles/search.html', context)
-
+        "articles": articles,
+        "text": text,
+    }
+    return render(request, "articles/search.html", context)

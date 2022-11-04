@@ -3,7 +3,7 @@
 {% load static %}
 {% block content %}
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade2" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-footer flex-column">
@@ -58,7 +58,7 @@
 
     <!-- Full-width images with number and caption text -->
     {% for i in article.articles_image.all %}
-    <div class="mySlides fade">
+    <div class="mySlides">
       <div class="numbertext">{{ forloop.counter }} / {{ article.articles_image.count }}</div>
       <img src="{{ i.image.url }}" style="width:100%">
     </div>
