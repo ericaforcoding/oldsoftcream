@@ -77,6 +77,13 @@
 {% endfor %}
   </div>
 
+
+    <div class="container">
+        <p style="font-size: 2rem;" class="my-2">{{ article.title }}</p>
+        <p class="my-2"> Content: {{ article.content }} </p>
+        <p class="my-2"> Updated: {{ article.updated_at }} </p>
+    </div>
+
     <div class="d-flex justify-content-between">
         <div class='d-flex justify-content-center my-3 text-danger'>
             {% if request.user.is_authenticated %}
@@ -96,8 +103,7 @@
             </span>
         </div>
     </div>
-
-    <p style="font-size: 2rem;" class="my-2"> 제목 {{ article.title }} </p>
+    
     <p class="my-2"> 내용 {{ article.content }} </p>
     <div>
     {% if article.comment_set %}
