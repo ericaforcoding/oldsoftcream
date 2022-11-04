@@ -11,6 +11,7 @@ from django.db import transaction
 
 # Create your views here.
 def index(request):
+        
     return render(request, "articles/index.html")
 
 @login_required
@@ -55,13 +56,26 @@ def update(request, pk):
     article = get_object_or_404(Articles, pk=pk)
     if request.method == 'POST':
         article_form = ArticleForm(request.POST, request.FILES, instance=article)
-        if article_form.is_valid():
-            article_form.save()
+        image_form = ImageForm(request.POST, request.FILES, instance=article)
+        images = request.FILES.getlist("image")
+        if article_form.is_valid() and image_form.is_valid():
+            article_form = article_forms.save(commit=False)
+            image_form = image_forms.save(commit=False)
+            article_form.user = request.user
+            if len(images):
+                for image in images:
+                    image_instance = Image(articles=article_form, image=image)
+                    article_form.save()
+                    image_instance.save()
+            else:
+                article_form.save()
             return redirect("articles:detail", article.pk)
     else:
         article_form = ArticleForm(instance=article)
+        image_form = ImageForm(instance=article)
     context = {
         "article_form": article_form,
+        "image_form": image_form,
     }
     return render(request, "articles/update.html", context)
 
