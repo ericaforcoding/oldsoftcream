@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db import transaction
+from django.db.models import Q
 
 
 # Create your views here.
@@ -143,3 +144,28 @@ def comment_d(request, pk):
 
 def append(request):
     return render(request, "append.html")
+
+
+def search(request):
+    searched = request.GET.get('searched', False)
+    field = request.GET.get('field')
+    if field == '1':
+        articles = Articles.objects.filter(Q(title__contains=searched) | Q(content__contains=searched) | Q(user__username__contains=searched)).order_by('-pk')
+    elif field == '2':
+        articles = Articles.objects.filter(Q(title__contains=searched)).order_by('-pk')
+    elif field == '3':
+        articles = Articles.objects.filter(Q(content__contains=searched)).order_by('-pk')
+    elif field == '4':
+        articles = Articles.objects.filter(Q(user__username__contains=searched)).order_by('-pk')
+    if not searched:
+        articles = []
+        text = "검색어를 입력하세요."
+    elif len(articles) == 0:
+        text = "검색 결과가 없습니다."
+    else:
+        text = ""
+    context = {
+        'articles' : articles,
+        "text" : text,
+        }
+    return render(request, 'articles/search.html', context)
