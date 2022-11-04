@@ -31,7 +31,7 @@ class Photo(models.Model):
     image = models.ImageField(upload_to='images/', blank=True, null=True)
 
 class Image(models.Model):
-    articles = models.ForeignKey(Articles, on_delete=models.CASCADE)
+    articles = models.ForeignKey(Articles, on_delete=models.CASCADE, related_name='articles_image')
     image = ProcessedImageField(upload_to='images/', blank=True,
                                 processors=[ResizeToFill(1200, 960)],
                                 format='JPEG',

@@ -192,9 +192,16 @@
                   </li>
                   {% endif %}
                 </ul>
-                <form class="d-flex ms-3" role="search">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                  <button class="btn btn-outline-dark" type="submit">Search</button>
+                <form class="d-flex" role="search" method='GET' action="{% url 'articles:search' %}">
+                  <select class="select border rounded" aria-label="Default select example" name='field'>
+                    <option value="1">전체</option>
+                    <option value="2">제목</option>
+                    <option value="3">내용</option>
+                    <option value="4">작성자</option>
+                  </select>
+                  <input class="form-control me-2" type="search" placeholder="게시글 검색" name='searched'>
+              
+                  <button class="btn btn-outline-success me-2" type="submit" style="width: 7rem;">검색</button>
                 </form>
               </div>
             </div>
