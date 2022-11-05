@@ -95,9 +95,8 @@
           </div>
           <p class='ms-4'>{{ article.content }}</p>
         </div>
-        {% if request.user.is_authenticated %}
         <form id='comment-form' data-article-id="{{ article.pk }}" class='row'>
-            <div class="col-2 mt-4 ps-4" onclick='location.href="{% url 'accounts:mypage' request.user.pk %}";' style='cursor:pointer; margin-top: 1.7rem !important'>
+            <div class="col-2 mt-4 ps-4" onclick='location.href="{% url 'accounts:mypage' request.user.pk %}"' style='cursor:pointer; margin-top: 1.7rem !important'>
               {% if request.user.profile.image %}
               <img src="{{ request.user.profile.image.url }}" alt="{{ request.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
               {% else %}
@@ -113,16 +112,13 @@
             </div>
           </form>
         {% endif %}
-        {% endif %}
         <div class='ms-2'>
           {% if article.comment_set %}
           <p id='comment_count'>댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p>
           <div id='comments'>
               {% for comment in article.comment_set.all %}
               <div class="d-flex mb-3">
-
-                  <div class='me-2' onclick='location.href="{% url 'accounts:mypage' comment.user.pk %}";' style='cursor: pointer;'>
-
+                  <a class='me-2' onclick='location.href="{% url 'accounts:mypage' comment.user.pk %}"' style='cursor: pointer;'>
                       {% if comment.user.profile.image %}
                       <img src="{{ comment.user.profile.image.url }}" alt="{{ comment.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
                       {% else %}
