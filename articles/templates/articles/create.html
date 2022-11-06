@@ -7,14 +7,13 @@
 <div class="container">
   <form action="" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
-      <div class="text-end">
-        <input type="submit" value="작성하기" class="btn btn-primary">
-      </div>
       {% bootstrap_form article_form %}
 
       <div class="d-flex justify-content-between">
         <input type="file" name="image" style="cursor:pointer;" multiple>
-        <a href="{% url 'articles:index' %}" class="text-decoration-none" style="color:rgb(0, 128, 255); cursor:pointer">홈으로</a>
+        <input type="submit" value="작성하기" class="btn btn-primary">
+        <!-- <input type="submit" value="작성하기" class="btn btn-info"> -->
+        <!-- <a href="{% url 'articles:index' %}" class="text-decoration-none" style="color:rgb(0, 128, 255); cursor:pointer">홈으로</a> -->
       </div>
   </form>
 </div>
